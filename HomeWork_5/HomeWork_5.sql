@@ -1,17 +1,25 @@
 USE vk;
 
 -- 1. Пусть в таблице users поля created_at и updated_at оказались незаполненными. Заполните их текущими датой и временем.
-UPDATE users
-    SET created_at = NULL;
+UPDATE users 
+SET 
+    created_at = NULL;
 
-UPDATE users
-    SET updated_at = NULL;
+UPDATE users 
+SET 
+    updated_at = NULL;
 
-UPDATE users
-    SET created_at = NOW() WHERE created_at is NULL;
+UPDATE users 
+SET 
+    created_at = NOW()
+WHERE
+    created_at IS NULL;
 
-UPDATE users
-    SET updated_at = NOW() WHERE updated_at is NULL;
+UPDATE users 
+SET 
+    updated_at = NOW()
+WHERE
+    updated_at IS NULL;
     
 -- 2.Таблица users была неудачно спроектирована. Записи created_at и updated_at были заданы типом VARCHAR и в них долгое время помещались значения
 -- в формате "20.10.2017 8:10". Необходимо преобразовать поля к типу DATETIME, сохранив введеные ранее значения.
@@ -24,26 +32,32 @@ ALTER TABLE users
     CHANGE COLUMN `updated_at` `updated_at` VARCHAR(256) NULL;
 
 describe users;
-SELECT created_at from users;
+SELECT 
+    created_at
+FROM
+    users;
 
 ALTER TABLE users 
     CHANGE COLUMN `created_at` `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     CHANGE COLUMN `updated_at` `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 describe users;
-SELECT created_at from users;
+SELECT 
+    created_at
+FROM
+    users;
 
 -- 3. В таблице складских запасов storehouses_products в поле value могут встречаться самые разные цифры: 0,
 -- если товар закончился и выше нуля, если на складе имеются запасы. Необходимо отсортировать записи таким образом,
 -- чтобы они выводились в порядке увеличения значения value. Нулевые запасы должны выводиться в конце, после всех записей.
-create table storehouses_products (
-	id SERIAL PRIMARY KEY,
-    storehouse_id INT unsigned,
-    product_id INT unsigned,
-    `value` INT unsigned COMMENT 'Запас товарный позиции на складке',
+CREATE TABLE storehouses_products (
+    id SERIAL PRIMARY KEY,
+    storehouse_id INT UNSIGNED,
+    product_id INT UNSIGNED,
+    `value` INT UNSIGNED COMMENT 'Запас товарный позиции на складке',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) COMMENT = 'Запасы на складе';
+)  COMMENT='Запасы на складе';
 
 INSERT INTO
     storehouses_products (storehouse_id, product_id, value)
@@ -57,5 +71,9 @@ VALUES
 SELECT 
     value
 FROM
-    storehouses_products ORDER BY CASE WHEN value = 0 then 1 else 0 end, value;
+    storehouses_products
+ORDER BY CASE
+    WHEN value = 0 THEN 1
+    ELSE 0
+END , value;
     
